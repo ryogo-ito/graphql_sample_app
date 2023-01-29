@@ -1,9 +1,34 @@
-import React from "react";
+import { gql, useQuery } from "@apollo/client";
 
-const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
+const ME = gql`
+  query me {
+    user(login: "ryogo-ito") {
+      name
+      avatarUrl
+    }
+  }
+`;
 
-function App() {
-  return <div>hello graphQL</div>;
+interface User {
+  name: string;
+  avatarUrl: string;
 }
 
-export default App;
+export const App = () => {
+  const { data } = useQuery<User>(ME);
+
+  if (!Boolean(data)) {
+    console.log(data);
+    return <div>dame</div>;
+  }
+
+  return (
+    <>
+      {data && (
+        <h1
+          style={{ backgroundColor: "red" }}
+        >{`アカウント名は${data.name}`}</h1>
+      )}
+    </>
+  );
+};
